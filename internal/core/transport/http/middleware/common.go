@@ -6,7 +6,7 @@ import (
 	"time"
 
 	core_logger "github.com/Timofey-Grishechko/golang-todoapp/internal/core/logger"
-	core_http_response "github.com/Timofey-Grishechko/golang-todoapp/internal/transport/http/response"
+	core_http_response "github.com/Timofey-Grishechko/golang-todoapp/internal/core/transport/http/response"
 	"github.com/google/uuid"
 	"go.uber.org/zap"
 )
@@ -23,7 +23,7 @@ func RequestID() Middleware {
 				requestID = uuid.NewString()
 			}
 
-			r.Header.Set("", requestID)
+			r.Header.Set(requestIDHeader, requestID)
 			w.Header().Set(requestIDHeader, requestID)
 
 			next.ServeHTTP(w, r)
@@ -69,7 +69,6 @@ func Panic() Middleware {
 	}
 }
 
-
 func Trace() Middleware {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -80,11 +79,11 @@ func Trace() Middleware {
 			before := time.Now()
 			log.Debug(
 				">>> incoming HTTP request",
+				zap.String("http_method", r.Method),
 				zap.Time("time", before.UTC()),
 			)
-			
-			next.ServeHTTP(rw, r)
 
+			next.ServeHTTP(rw, r)
 
 			log.Debug(
 				">>> done HTTP request",
