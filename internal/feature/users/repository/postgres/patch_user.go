@@ -7,7 +7,7 @@ import (
 
 	"github.com/Timofey-Grishechko/golang-todoapp/internal/core/domain"
 	core_errors "github.com/Timofey-Grishechko/golang-todoapp/internal/core/errors"
-	"github.com/jackc/pgx/v5"
+	core_postgres_pool "github.com/Timofey-Grishechko/golang-todoapp/internal/core/repository/postgres/pool"
 )
 
 func (r *UserRepository) PathcUser(
@@ -49,7 +49,7 @@ func (r *UserRepository) PathcUser(
 		&userModel.PhoneNumber,
 	)
 	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
+		if errors.Is(err, core_postgres_pool.ErrNoRows) {
 			return domain.User{}, fmt.Errorf(
 				"user with id='%d' concurrently accessed: %w",
 				id,
