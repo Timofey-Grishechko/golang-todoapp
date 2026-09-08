@@ -22,7 +22,7 @@ env-cleanup:
 env-port-forward:
 	@docker compose up -d port-forwarder
 
-env-port-down:
+env-port-close:
 	@docker compose down port-forwarder
 
 migrate-create:
@@ -62,3 +62,9 @@ todoapp-run:
 	@export LOGGER_FOLDER=${PROJECT_ROOT}/out/logs && \
 	export POSTGRES_HOST=localhost && \
 	go run ${PROJECT_ROOT}/cmd/todoapp/main.go
+
+todoapp-deploy:
+	@docker compose up -d --build todoapp
+
+ps:
+	@docker compose ps
